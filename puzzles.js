@@ -26,6 +26,10 @@ const PUZZLES=[
    rows:['Colours','Animals','Weapons'],
    cols:['__fish','__house','__ball']},
 
+  {words:['Bird','Lion','Bull','Jack','Horse','Doll','Berry','Weed','Moss'],
+   rows:['Animals','Toys','Plants'],
+   cols:['Black __','Sea __','Ends in double letter']},
+
   // add the next puzzle here, e.g.
   // {words:['','','','','','','','',''],
   //  rows:['','',''],
