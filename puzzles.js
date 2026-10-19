@@ -30,6 +30,10 @@ const PUZZLES=[
    rows:['Animals','Toys','Plants'],
    cols:['Black __','Sea __','Ends in double letter']},
 
+  {words:['Story','Bio','DM','Ledger','Crypto','NFT','Picture','Photo','JPG'],
+   rows:['Bit of social platform','Relating to Blockchain','Pic'],
+   cols:['Types of books','__graphy','Acronyms']},
+
   // add the next puzzle here, e.g.
   // {words:['','','','','','','','',''],
   //  rows:['','',''],
