@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Interconnections</title>
+<meta name="description" content="A daily word puzzle: arrange nine words so every row and every column shares a connection.">
+<meta name="theme-color" content="#121213">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Interconnections">
+<meta property="og:description" content="A daily word puzzle: arrange nine words so every row and every column shares a connection.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23121213'/%3E%3Cg fill='%23a7d3f5'%3E%3Crect x='6' y='6' width='5' height='5' rx='1'/%3E%3C/g%3E%3Cg fill='%236aaa64'%3E%3Crect x='13.5' y='6' width='5' height='5' rx='1'/%3E%3Crect x='6' y='13.5' width='5' height='5' rx='1'/%3E%3Crect x='13.5' y='13.5' width='5' height='5' rx='1'/%3E%3C/g%3E%3Cg fill='%23c9b458'%3E%3Crect x='21' y='6' width='5' height='5' rx='1'/%3E%3Crect x='21' y='13.5' width='5' height='5' rx='1'/%3E%3C/g%3E%3Cg fill='%23787c7e'%3E%3Crect x='6' y='21' width='5' height='5' rx='1'/%3E%3Crect x='13.5' y='21' width='5' height='5' rx='1'/%3E%3Crect x='21' y='21' width='5' height='5' rx='1'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+:root{--head-bg:#f4a9a8;--overlay:rgba(255,255,255,.72);--shadow:0 4px 23px rgba(0,0,0,.2);--bg:#fff;--fg:#121213;--line:#d3d6da;--tile-bg:#e3e5e8;--tile-fg:#121213;--green:#6aaa64;--purple:#b79df0;--yellow:#c9b458;--grey:#787c7e;--muted:#6b6e72;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--head-bg:#f4a9a8;--overlay:rgba(18,18,19,.72);--shadow:0 4px 23px rgba(0,0,0,.6);--bg:#121213;--fg:#f4f4f4;--line:#3a3a3c;--tile-bg:#d3d6da;--tile-fg:#121213;--muted:#a0a3a8}}
+:root[data-theme="dark"]{--head-bg:#f4a9a8;--overlay:rgba(18,18,19,.72);--shadow:0 4px 23px rgba(0,0,0,.6);--bg:#121213;--fg:#f4f4f4;--line:#3a3a3c;--tile-bg:#d3d6da;--tile-fg:#121213;--muted:#a0a3a8}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Helvetica Neue",Arial,sans-serif;min-height:100vh}
+main{max-width:460px;margin:0 auto;padding:16px 16px 32px;position:relative}
+header.top{position:relative;display:flex;align-items:center;justify-content:center;min-height:56px;padding:8px 16px;border-bottom:1px solid var(--line)}
+h1 .pno{font-size:.7em;font-weight:700;color:var(--muted);margin-left:4px;letter-spacing:0}
+h1{font-size:clamp(1.05rem,5vw,1.6rem);text-align:center;margin:0;letter-spacing:.02em}
+.sub{text-align:center;color:var(--muted);font-size:.85rem;font-weight:700;margin:0 0 18px}
+#grid{display:grid;grid-template-columns:1fr 5px 1fr 1fr 1fr;gap:8px}
+.rowhead{grid-column:1}
+.cell{aspect-ratio:1.5/1;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:700;font-size:1.05rem;user-select:none}
+.head{background:var(--head-bg);border:2px solid transparent;color:var(--tile-fg);padding:2px;overflow-wrap:anywhere;text-align:center;line-height:1.15}
+.tile{background:var(--tile-bg);color:var(--tile-fg);border:2px solid transparent;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.tile.sel{transform:scale(.95);box-shadow:0 0 0 3px var(--fg),inset 0 2px 6px rgba(0,0,0,.28)}
+.tile.g2{background:var(--green);border-color:var(--green);color:#fff;cursor:default}
+.tile.g1{background:var(--yellow);border-color:var(--yellow);color:#fff}
+.tile.g0{background:var(--grey);border-color:var(--grey);color:#fff}
+#grid{position:relative}
+.divc{grid-column:3/-1;height:5px;background:var(--fg);border-radius:6px}
+.vline{position:absolute;grid-column:2/3;grid-row:3/6;top:0;bottom:0;left:0;right:0;background:var(--fg);border-radius:6px}
+#bar{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:24px}
+#lives{display:flex;gap:8px}
+.life{width:20px;height:20px;border-radius:50%;background:var(--fg);border:2px solid var(--fg)}
+.life.off{background:transparent;opacity:.45}
+button{font:inherit;font-weight:600;padding:10px 18px;border-radius:999px;border:2px solid var(--fg);background:var(--bg);color:var(--fg);cursor:pointer}
+button#submit{background:var(--fg);color:var(--bg)}
+button:disabled{opacity:.35;cursor:default}
+.tools{position:absolute;top:50%;right:16px;transform:translateY(-50%);display:flex;gap:6px}
+button.icon{width:32px;height:32px;padding:0;display:grid;place-items:center;font-size:1rem;line-height:1}
+button.icon svg{width:16px;height:16px;fill:currentColor}
+button.icon[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+button.icon:disabled[aria-pressed="true"]{opacity:.7}
+.overlay{position:fixed;inset:0;z-index:30;background:var(--overlay);display:flex;align-items:center;justify-content:center;padding:16px}
+.overlay[hidden]{display:none}
+.dialog{position:relative;background:var(--bg);color:var(--fg);border-radius:8px;box-shadow:var(--shadow);padding:44px 32px 32px;max-width:480px;width:100%;max-height:calc(100vh - 32px);overflow:auto;animation:popin .18s ease-out}
+@keyframes popin{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+.dialog h2{font-size:1.7rem;font-weight:800;margin:0 0 4px;letter-spacing:-.01em}
+.dialog .lead{font-size:1.1rem;margin:0 0 14px}
+.dialog p,.dialog li{font-size:.92rem;line-height:1.45}
+.dialog p{margin:10px 0}
+.dialog ul{padding-left:20px;margin:0 0 16px}
+.dialog li{margin:6px 0}
+.dialog h3{font-size:.95rem;margin:18px 0 8px}
+button.x{position:absolute;top:12px;right:12px;width:36px;height:36px;padding:0;border:none;background:transparent;border-radius:50%;display:grid;place-items:center}
+button.x:hover{background:var(--tile-bg);color:var(--tile-fg)}
+button.x svg{width:22px;height:22px;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;fill:none}
+.ex{display:flex;gap:6px;margin:10px 0 6px}
+.ex span{flex:0 0 72px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:700;font-size:.8rem;background:var(--tile-bg);color:var(--tile-fg)}
+.ex .g{background:var(--green);color:#fff}
+.ex .y{background:var(--yellow);color:#fff}
+.ex .n{background:var(--grey);color:#fff}
+.sep{border:0;border-top:1px solid var(--line);margin:12px 0}
+.share{display:flex;justify-content:center;margin-top:4px}
+button#share{background:var(--fg);color:var(--bg);padding:12px 36px;font-size:1rem;display:inline-flex;align-items:center;gap:10px}
+button#share svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;text-align:center;margin:16px 0 6px}
+.stats b{display:block;font-size:2rem;font-weight:400;line-height:1.1}
+.stats span{display:block;font-size:.72rem;line-height:1.2;margin-top:3px}
+.dialog h3.ct{text-align:center;margin:22px 0 10px}
+.plot{height:150px;display:flex;justify-content:center;align-items:flex-end;gap:12px}
+.plot .bar,.xl span{width:64px}
+.bar{background:var(--grey);color:#fff;font-weight:700;font-size:.9rem;display:flex;justify-content:center;padding-top:4px;border-radius:6px 6px 0 0}
+.bar.hit{background:var(--head-bg);color:var(--tile-fg)}
+.xl{display:flex;justify-content:center;gap:12px;margin-top:6px}
+.xl span{text-align:center;font-size:.85rem;font-weight:700}
+.dialog .foot{margin-top:20px;color:var(--muted);font-size:.85rem}
+@keyframes tileflip{
+0%{transform:perspective(500px) rotateX(0);background:var(--ob);color:var(--of);border-color:var(--obd)}
+49.9%{transform:perspective(500px) rotateX(90deg);background:var(--ob);color:var(--of);border-color:var(--obd)}
+50%{transform:perspective(500px) rotateX(90deg);background:var(--nb);color:var(--nf);border-color:var(--nbd)}
+100%{transform:perspective(500px) rotateX(0);background:var(--nb);color:var(--nf);border-color:var(--nbd)}}
+.toast{position:fixed;top:16%;left:50%;transform:translateX(-50%);z-index:40;background:#000;color:#fff;font-weight:700;font-size:1rem;padding:12px 22px;border-radius:8px;border:1px solid rgba(255,255,255,.25);pointer-events:none;animation:toast 1800ms ease-in-out both}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,-8px)}12%,78%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,0)}}
+@keyframes hopgreen{
+0%{transform:translateY(0);background:var(--ob);color:var(--of);border-color:var(--obd)}
+40%{transform:translateY(-18px);background:var(--green);color:#fff;border-color:var(--green)}
+70%{transform:translateY(0);background:var(--green);color:#fff;border-color:var(--green)}
+85%{transform:translateY(-5px);background:var(--green);color:#fff;border-color:var(--green)}
+100%{transform:translateY(0);background:var(--green);color:#fff;border-color:var(--green)}}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-18px)}70%{transform:translateY(0)}85%{transform:translateY(-5px)}}
+</style>
+</head>
+<body>
+<header class="top">
+<h1>Interconnections <span id="pno" class="pno"></span></h1>
+<div class="tools">
+<button id="hard" class="icon" aria-label="Hard mode" aria-pressed="false" title="Hard mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></button>
+<button id="help" class="icon" aria-label="How to play" title="How to play">?</button>
+</div>
+</header>
+<main>
+<p class="sub">Every word belongs to one row and one column.</p>
+<div id="grid"></div>
+<div id="bar"><div id="lives"></div><button id="revert">Revert</button><button id="submit">Submit</button></div>
+</main>
+<div id="modal" class="overlay" hidden>
+<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="mt">
+<button id="close" class="x" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+<h2 id="mt">How To Play</h2>
+<p class="lead">Sort the nine words into a 3&times;3 grid of connections in 3 tries.</p>
+<ul>
+<li>Every row and every column shares a connection, and each word belongs to one row and one column.</li>
+<li>Tap a tile, then another, to swap them. Press <b>Submit</b> to check. <b>Revert</b> undoes swaps you haven't submitted.</li>
+<li>The rows and columns start unlabelled. The game picks the setup that best fits your grid, and the colour of each tile shows how close it is.</li>
+<li>When a whole row or column is green, its connection is revealed.</li>
+</ul>
+<h3>Examples</h3>
+<div class="ex"><span class="g">Apple</span><span>Plum</span><span>Lemon</span></div>
+<p><b>Apple</b> is in the correct row and the correct column. It locks in place.</p>
+<div class="ex"><span>Soup</span><span class="y">Pear</span><span>Rice</span></div>
+<p><b>Pear</b> is in the correct row or the correct column, but not both.</p>
+<div class="ex"><span>Fork</span><span>Gold</span><span class="n">Brick</span></div>
+<p><b>Brick</b> is in neither the correct row nor the correct column.</p>
+<h3>Hard mode</h3>
+<p>Press the lightning button before your first guess. The rows and columns are then fixed from the start instead of adapting to your guess, so a group in the wrong place scores nothing and you need the exact layout.</p>
+<p class="foot">A new puzzle is released daily at midnight.</p>
+</div>
+</div>
+<div id="stats" class="overlay" hidden>
+<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="st">
+<button id="closeStats" class="x" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+<h2 id="st">Statistics</h2>
+<hr class="sep">
+<div class="stats" id="statNums"></div>
+<h3 class="ct">Guess distribution</h3>
+<div class="plot" id="plot"></div>
+<div class="xl"><span>1</span><span>2</span><span>3</span></div>
+<hr class="sep">
+<div class="share"><button id="share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>Share</button></div>
+</div>
+</div>
+<script src="puzzles.js"></script>
+<script>
+// Public address put in shared results. Leave empty to use this page's own address when it is served over http(s).
+const SHARE_URL='';
+// The puzzle list (PUZZLES) and the launch date (LAUNCH) live in puzzles.js
+const PUZZLE_NO=(()=>{const n=new Date(),
+  d=Math.round((Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())-Date.UTC(LAUNCH[0],LAUNCH[1]-1,LAUNCH[2]))/864e5);
+  return Math.max(0,d)+1})();
+const PUZ=PUZZLES[(PUZZLE_NO-1)%PUZZLES.length];
+const WORDS=PUZ.words,ROWS=PUZ.rows,COLS=PUZ.cols;
+const P=[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
+const ORD=[];[false,true].forEach(t=>P.forEach(r=>P.forEach(c=>ORD.push([r,c,t]))));
+function hit(p,w,pr,pc,t){const r=w/3|0,c=w%3;return(pr[p/3|0]===(t?c:r))+(pc[p%3]===(t?r:c))}
+function score(b,pr,pc,t){let g=0,y=0;for(let p=0;p<9;p++){const n=hit(p,b[p],pr,pc,t);if(n===2)g++;else if(n===1)y++}return[g,y]}
+function levels(b,pr,pc,t){return b.map((w,p)=>hit(p,w,pr,pc,t))}
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function startBoard(){
+  const d=new Date(),seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(),r=rng(seed);
+  let b;
+  do{b=[0,1,2,3,4,5,6,7,8];for(let i=8;i>0;i--){const j=Math.floor(r()*(i+1));[b[i],b[j]]=[b[j],b[i]]}}
+  while(ORD.some(([pr,pc,t])=>score(b,pr,pc,t)[0]===9));
+  return b;
+}
+// Hard mode: the rows/columns are preset for the day (not chosen to suit the player's guess)
+const HCFG=(()=>{const d=new Date(),seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
+  return ORD[Math.floor(rng(seed+999)()*ORD.length)]})();
+let board=startBoard(),last=board.slice(),lives=3,shown=3,busy=false,solShown=false,recorded=false,guessLog=[],hard=false,started=false,sel=null,over=false,won=false;
+const locked=new Set(),fixR=[null,null,null],fixC=[null,null,null],info={};let fixT=null;
+const $=id=>document.getElementById(id);
+function render(){
+  let h='<div class="cell"></div>';
+  for(let j=0;j<3;j++){const on=[0,1,2].every(i=>locked.has(i*3+j));
+    h+=`<div class="cell head ${on?'on':''}" style="grid-column:${j+3}">${on?(fixT?ROWS:COLS)[fixC[j]]:'?'}</div>`}
+  h+='<div class="divc"></div><div class="vline"></div>';
+  for(let i=0;i<3;i++){
+    const on=[0,1,2].every(j=>locked.has(i*3+j));
+    h+=`<div class="cell head rowhead ${on?'on':''}">${on?(fixT?COLS:ROWS)[fixR[i]]:'?'}</div>`;
+    for(let j=0;j<3;j++){const p=i*3+j,w=board[p],lv=info[w]&&info[w][p];
+      const cls=locked.has(p)?'g2':lv===1?'g1':lv===0?'g0':'';
+      h+=`<div class="cell tile ${cls} ${sel===p?'sel':''}" style="grid-column:${j+3}" data-p="${p}">${WORDS[w]}</div>`}
+  }
+  $('grid').innerHTML=h;
+  $('lives').innerHTML=[0,1,2].map(k=>`<span class="life ${k<shown?'':'off'}"></span>`).join('');
+  const same=board.every((w,p)=>w===last[p]);
+  $('revert').disabled=over||same;$('submit').disabled=over||same;
+  $('hard').setAttribute('aria-pressed',hard);$('hard').disabled=started;
+}
+function celebrate(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  // jump wave through the tiles, same diagonal pattern as the reveal
+  document.querySelectorAll('#grid .tile').forEach(t=>{const p=+t.dataset.p;
+    t.style.animation=`hop 550ms ease-out ${((p/3|0)+p%3)*140}ms`});
+  // confetti
+  const W=innerWidth,H=innerHeight,dpr=devicePixelRatio||1,c=document.createElement('canvas');
+  c.style.cssText='position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:10';
+  c.width=W*dpr;c.height=H*dpr;document.body.appendChild(c);
+  const x=c.getContext('2d');x.scale(dpr,dpr);
+  const cols=['#6aaa64','#c9b458','#7c5cbf','#e8618c','#4aa3df','#f4a340'];
+  const ps=Array.from({length:180},(_,i)=>{
+    const left=i%2===0,a=(left?-Math.PI/3:-2*Math.PI/3)+(Math.random()-.5)*.9,v=9+Math.random()*10;
+    return{x:left?W*.05:W*.95,y:H*.75,vx:Math.cos(a)*v,vy:Math.sin(a)*v,w:6+Math.random()*6,h:4+Math.random()*5,
+      r:Math.random()*6.28,vr:(Math.random()-.5)*.4,c:cols[i%cols.length]}});
+  const start=performance.now(),DUR=4200;
+  (function frame(now){
+    const t=now-start;x.clearRect(0,0,W,H);
+    if(t>DUR){c.remove();return}
+    x.globalAlpha=Math.min(1,(DUR-t)/800);
+    for(const p of ps){p.vy+=.3;p.vx*=.99;p.vy*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;
+      x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h);x.restore()}
+    requestAnimationFrame(frame)})(start);
+}
+const FLIP=700,STEP=490; // flip length, and delay between diagonals (next starts at 70% of the previous)
+const flipEls=()=>[...document.querySelectorAll('#grid .tile,#grid .head')];
+function snap(){return flipEls().map(e=>{const s=getComputedStyle(e);return[s.backgroundColor,s.color,s.borderTopColor,e.textContent]})}
+function reveal(old,wasLocked){
+  const finish=()=>{busy=false;shown=lives;render();
+    if(over&&!recorded){recorded=true;recordResult()}
+    if(won){toast(['Genius','Bravo','Phew'][3-lives]);celebrate();setTimeout(showStats,2400)}
+    else if(over&&!solShown){solShown=true;toast('Next time');setTimeout(showSolution,2000)}};
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return}
+  busy=true;render();
+  $('revert').disabled=$('submit').disabled=true;
+  let end=0;
+  // only diagonals that still have a tile to flip count, so already-locked greens leave no pause
+  const days=[...new Set([...Array(9).keys()].filter(p=>!wasLocked.has(p)).map(p=>(p/3|0)+p%3))].sort((a,b)=>a-b);
+  flipEls().forEach((e,k)=>{
+    const s=getComputedStyle(e),o=old[k],n=[s.backgroundColor,s.color,s.borderTopColor,e.textContent];
+    const isTile=e.classList.contains('tile');
+    let delay;
+    if(isTile){const p=+e.dataset.p;if(wasLocked.has(p))return;delay=days.indexOf((p/3|0)+p%3)*STEP}
+    else{if(o.join()===n.join())return;delay=days.length*STEP} // headers flip as the wave's final step
+    [['--ob',o[0]],['--of',o[1]],['--obd',o[2]],['--nb',n[0]],['--nf',n[1]],['--nbd',n[2]]].forEach(([k2,v])=>e.style.setProperty(k2,v));
+    e.style.animation=`tileflip ${FLIP}ms ease-in-out ${delay}ms both`;
+    if(!isTile){e.textContent=o[3];setTimeout(()=>{e.textContent=n[3]},delay+FLIP/2)}
+    end=Math.max(end,delay+FLIP);
+  });
+  setTimeout(finish,end+30);
+}
+// ---- statistics (kept in localStorage; each day's puzzle is counted once)
+const SKEY='interconnections-stats-v1';
+const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+let memStats=null;
+function loadStats(){
+  try{const r=localStorage.getItem(SKEY);if(r){const o=JSON.parse(r);if(o&&Array.isArray(o.dist))return o}}catch(e){}
+  return memStats||{played:0,wins:0,cur:0,max:0,last:null,res:-1,dist:[0,0,0]};
+}
+function saveStats(st){memStats=st;try{localStorage.setItem(SKEY,JSON.stringify(st))}catch(e){}}
+function yesterday(){const d=new Date();d.setDate(d.getDate()-1);return ymd(d)}
+function recordResult(){
+  const st=loadStats(),today=ymd(new Date());
+  if(st.last===today)return; // today's puzzle is already counted
+  st.played++;
+  if(won){st.wins++;st.cur=(st.last===yesterday()?st.cur:0)+1;st.max=Math.max(st.max,st.cur);st.res=3-lives;st.dist[st.res]++}
+  else{st.cur=0;st.res=-1}
+  st.last=today;saveStats(st);
+}
+function showStats(){
+  const st=loadStats(),today=ymd(new Date());
+  const cur=(st.last===today||st.last===yesterday())?st.cur:0;
+  const rate=st.played?Math.round(100*st.wins/st.played):0;
+  $('statNums').innerHTML=[[st.played,'Played'],[rate,'Win %'],[cur,'Current Streak'],[st.max,'Max Streak']]
+    .map(([n,l])=>`<div><b>${n}</b><span>${l}</span></div>`).join('');
+  const mx=Math.max(...st.dist),H=150,MIN=26; // fixed plot height, bars sized relative to the biggest
+  $('plot').innerHTML=st.dist.map((n,i)=>{const h=mx?MIN+(H-MIN)*n/mx:MIN;
+    return`<div class="bar${st.last===today&&st.res===i?' hit':''}" style="height:${h}px">${n}</div>`}).join('');
+  $('stats').hidden=false;$('closeStats').focus();
+}
+// ---- sharing: an emoji summary of how the board evolved, plus the link
+function shareText(){
+  const n=guessLog.length,emo=['⬛','🟨','🟩'],mode=hard?' on hard mode':'';
+  const head=won?`I solved Interconnections #${PUZZLE_NO}${mode} in ${n} ${n===1?'guess':'guesses'}!`:`I couldn't solve Interconnections #${PUZZLE_NO}${mode} today.`;
+  const rows=[0,1,2].map(r=>guessLog.map(lv=>[0,1,2].map(c=>emo[lv[r*3+c]]).join('')).join('➡️'));  // the same connector on every row keeps the boards lined up in any font
+  const url=SHARE_URL||(/^https?:/.test(location.href)?location.href.split('#')[0]:'');
+  return head+'\n\n'+rows.join('\n')+(url?'\n\nYou can play here '+url:'');
+}
+async function copyText(t){
+  try{await navigator.clipboard.writeText(t);return true}catch(e){}
+  try{const ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0';
+    document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();return ok}catch(e){return false}
+}
+// Run a board change, then slide every tile that moved from its old spot to its new one.
+function moveRender(change){
+  const from={};
+  document.querySelectorAll('#grid .tile').forEach(el=>{from[board[+el.dataset.p]]=[el.offsetLeft,el.offsetTop]});
+  change();
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  document.querySelectorAll('#grid .tile').forEach(el=>{
+    const f=from[board[+el.dataset.p]];if(!f)return;
+    const dx=f[0]-el.offsetLeft,dy=f[1]-el.offsetTop;
+    if(!dx&&!dy)return;
+    el.style.position='relative';el.style.zIndex=2;
+    el.animate([{transform:`translate(${dx}px,${dy}px)`},{transform:'none'}],{duration:320,easing:'cubic-bezier(.22,.8,.3,1)'});
+  });
+}
+function toast(text){
+  document.querySelectorAll('.toast').forEach(t=>t.remove());
+  const el=document.createElement('div');el.className='toast';el.textContent=text;
+  document.body.appendChild(el);setTimeout(()=>el.remove(),1800);
+}
+// After losing: slide every tile into a correct arrangement (locked greens stay put), then flip them green.
+function showSolution(){
+  busy=true;
+  const t=hard?HCFG[2]:fixT===true;
+  const fill=a=>{const used=new Set(a.filter(v=>v!==null)),rest=[0,1,2].filter(v=>!used.has(v));return a.map(v=>v===null?rest.shift():v)};
+  const R=hard?HCFG[0].slice():fill(fixR),C=hard?HCFG[1].slice():fill(fixC),sol=Array(9);
+  for(let w=0;w<9;w++){const r=w/3|0,c=w%3,a=t?c:r,b=t?r:c;sol[R.indexOf(a)*3+C.indexOf(b)]=w}
+  const rect={},cls={};
+  document.querySelectorAll('#grid .tile').forEach(el=>{const w=board[+el.dataset.p];
+    rect[w]=el.getBoundingClientRect();cls[w]=['g2','g1','g0'].find(c=>el.classList.contains(c))||''});
+  board=sol;last=sol.slice();sel=null;render();
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let end=0;
+  document.querySelectorAll('#grid .tile').forEach(el=>{
+    const p=+el.dataset.p,w=board[p];
+    el.classList.remove('g0','g1','g2');if(cls[w])el.classList.add(cls[w]); // colours travel with the tile
+    const n=el.getBoundingClientRect(),dx=rect[w].left-n.left,dy=rect[w].top-n.top;
+    if(reduce||(!dx&&!dy))return;
+    const delay=((p/3|0)+p%3)*90,dur=900;
+    el.style.position='relative';el.style.zIndex=2;
+    el.animate([{transform:`translate(${dx}px,${dy}px)`},{transform:'translate(0,0)'}],
+      {duration:dur,delay,easing:'cubic-bezier(.22,.8,.3,1)',fill:'backwards'});
+    end=Math.max(end,delay+dur);
+  });
+  setTimeout(()=>{
+    // tiles are in place: the wrong ones jump up and turn green, diagonal by diagonal
+    const old=snap(),wasLocked=new Set(locked);
+    fixT=t;R.forEach((v,i)=>{fixR[i]=v});C.forEach((v,j)=>{fixC[j]=v});
+    for(let p=0;p<9;p++)locked.add(p);
+    render();
+    const days=[...new Set([...Array(9).keys()].filter(p=>!wasLocked.has(p)).map(p=>(p/3|0)+p%3))].sort((a,b)=>a-b);
+    const HOP=650,GAP=140;let fin=0;
+    if(!reduce)flipEls().forEach((e,k)=>{
+      const o=old[k];let delay;
+      if(e.classList.contains('tile')){
+        const p=+e.dataset.p;if(wasLocked.has(p))return;
+        delay=days.indexOf((p/3|0)+p%3)*GAP;
+        [['--ob',o[0]],['--of',o[1]],['--obd',o[2]]].forEach(([a,v])=>e.style.setProperty(a,v));
+        e.style.animation=`hopgreen ${HOP}ms ease-out ${delay}ms both`;
+      }else{
+        if(o[3]===e.textContent)return;
+        delay=days.length*GAP; // headers hop last and reveal their clue at the top of the jump
+        e.style.animation=`hop ${HOP}ms ease-out ${delay}ms both`;
+        const nt=e.textContent;e.textContent=o[3];setTimeout(()=>{e.textContent=nt},delay+HOP*.4);
+      }
+      fin=Math.max(fin,delay+HOP);
+    });
+    setTimeout(()=>{busy=false;render();setTimeout(showStats,700)},fin+50);
+  },end+250);
+}
+$('grid').addEventListener('click',e=>{
+  const t=e.target.closest('.tile');if(!t||over||busy)return;
+  const p=+t.dataset.p;if(locked.has(p))return;
+  if(sel===null)sel=p;
+  else if(sel===p)sel=null;
+  else{moveRender(()=>{[board[sel],board[p]]=[board[p],board[sel]];sel=null;render()});return}
+  render();
+});
+$('hard').onclick=()=>{
+  if(started||busy||over)return;
+  hard=!hard;render();toast(hard?'Hard mode on':'Hard mode off');
+};
+const modal=$('modal');
+const openRules=()=>{modal.hidden=false;$('close').focus()};
+const closeRules=()=>{modal.hidden=true;$('help').focus()};
+$('help').onclick=openRules;$('close').onclick=closeRules;
+modal.addEventListener('click',e=>{if(e.target===modal)closeRules()});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)closeRules()});
+const statsEl=$('stats'),closeStats=()=>{statsEl.hidden=true};
+$('closeStats').onclick=closeStats;
+$('share').onclick=async()=>{
+  const text=shareText();
+  if(navigator.share&&matchMedia('(pointer:coarse)').matches){ // phones/tablets: open the share sheet
+    try{await navigator.share({text});return}catch(e){if(e&&e.name==='AbortError')return}
+  }
+  toast(await copyText(text)?'Copied to clipboard':"Couldn't copy");
+};
+statsEl.addEventListener('click',e=>{if(e.target===statsEl)closeStats()});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!statsEl.hidden)closeStats()});
+$('revert').onclick=()=>moveRender(()=>{board=last.slice();sel=null;render()});
+$('submit').onclick=()=>{
+  if(over||busy)return;
+  const old=snap(),wasLocked=new Set(locked);
+  started=true;
+  const cands=[];
+  for(const [pr,pc,t] of (hard?[HCFG]:ORD)){
+    if(fixT!==null&&t!==fixT)continue;
+    if(pr.some((v,i)=>fixR[i]!==null&&fixR[i]!==v)||pc.some((v,j)=>fixC[j]!==null&&fixC[j]!==v))continue;
+    cands.push([[pr,pc,t],score(board,pr,pc,t)]);
+  }
+  // normal: the setup with the most greens (then most yellows). hard: the preset setup is the only candidate.
+  let best=null,bs=null;
+  for(const [cfg,s] of cands){
+    if(!bs||s[0]>bs[0]||(s[0]===bs[0]&&s[1]>bs[1])){best=cfg;bs=s}
+  }
+  const lv=levels(board,best[0],best[1],best[2]);
+  guessLog.push(lv.slice());
+  board.forEach((w,p)=>{(info[w]=info[w]||{})[p]=lv[p];
+    if(lv[p]===2){fixT=best[2];locked.add(p);fixR[p/3|0]=best[0][p/3|0];fixC[p%3]=best[1][p%3]}});
+  last=board.slice();sel=null;
+  if(locked.size===9){over=won=true}
+  else{lives--;
+    if(lives===0)over=true}
+  reveal(old,wasLocked);
+};
+$('pno').textContent='#'+PUZZLE_NO;
+render();
+</script>
+</body>
+</html>
