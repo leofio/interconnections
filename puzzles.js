@@ -34,6 +34,18 @@ const PUZZLES=[
    rows:['Bit of social platform','Relating to Blockchain','Pic'],
    cols:['Types of books','__graphy','Acronyms']},
 
+  {words:['Turkey','Dog','Sheep','Shoulder','Head','Eye','Brew','Chocolate','Coffee'],
+   rows:['Animals','Body parts','Drinks'],
+   cols:['Cold __','Hot __','Black __']},
+
+  {words:['Chicken','Kite','Jay','Onion','Pepper','Pea','Water','Wine','Tea'],
+   rows:['Birds','Vegetables','Drinks'],
+   cols:['Spring __','Red __','Homophones of letters']},
+
+  {words:['Lamb','Rabbit','Whale','Wrist','Cheek','Tooth','Raspberry','Apple','Berry'],
+   rows:['Animals','Body parts','Fruit'],
+   cols:['Contains silent letter','Contains double letter','Blue __']},
+
   // add the next puzzle here, e.g.
   // {words:['','','','','','','','',''],
   //  rows:['','',''],
