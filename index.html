@@ -306,13 +306,18 @@ function toast(text){
   const el=document.createElement('div');el.className='toast';el.textContent=text;
   document.body.appendChild(el);setTimeout(()=>el.remove(),1800);
 }
-// After losing: slide every tile into a correct arrangement (locked greens stay put), then flip them green.
-function showSolution(){
-  busy=true;
+// The board that completes the puzzle, keeping any greens already locked in.
+function solutionLayout(){
   const t=hard?HCFG[2]:fixT===true;
   const fill=a=>{const used=new Set(a.filter(v=>v!==null)),rest=[0,1,2].filter(v=>!used.has(v));return a.map(v=>v===null?rest.shift():v)};
   const R=hard?HCFG[0].slice():fill(fixR),C=hard?HCFG[1].slice():fill(fixC),sol=Array(9);
   for(let w=0;w<9;w++){const r=w/3|0,c=w%3,a=t?c:r,b=t?r:c;sol[R.indexOf(a)*3+C.indexOf(b)]=w}
+  return{t,R,C,sol};
+}
+// After losing: slide every tile into a correct arrangement (locked greens stay put), then flip them green.
+function showSolution(){
+  busy=true;
+  const {t,R,C,sol}=solutionLayout();
   const rect={},cls={};
   document.querySelectorAll('#grid .tile').forEach(el=>{const w=board[+el.dataset.p];
     rect[w]=el.getBoundingClientRect();cls[w]=['g2','g1','g0'].find(c=>el.classList.contains(c))||''});
@@ -361,7 +366,7 @@ $('grid').addEventListener('click',e=>{
   const p=+t.dataset.p;if(locked.has(p))return;
   if(sel===null)sel=p;
   else if(sel===p)sel=null;
-  else{moveRender(()=>{[board[sel],board[p]]=[board[p],board[sel]];sel=null;render()});return}
+  else{moveRender(()=>{[board[sel],board[p]]=[board[p],board[sel]];sel=null;render()});saveGame();return}
   render();
 });
 $('hard').onclick=()=>{
@@ -385,7 +390,7 @@ $('share').onclick=async()=>{
 };
 statsEl.addEventListener('click',e=>{if(e.target===statsEl)closeStats()});
 addEventListener('keydown',e=>{if(e.key==='Escape'&&!statsEl.hidden)closeStats()});
-$('revert').onclick=()=>moveRender(()=>{board=last.slice();sel=null;render()});
+$('revert').onclick=()=>{moveRender(()=>{board=last.slice();sel=null;render()});saveGame()};
 $('submit').onclick=()=>{
   if(over||busy)return;
   const old=snap(),wasLocked=new Set(locked);
@@ -409,8 +414,40 @@ $('submit').onclick=()=>{
   if(locked.size===9){over=won=true}
   else{lives--;
     if(lives===0)over=true}
+  saveGame();
   reveal(old,wasLocked);
 };
+// ---- remember today's game so reopening the page doesn't start it again
+const GKEY='interconnections-game-v1';
+let memGame=null;
+function saveGame(){
+  const g={day:ymd(new Date()),no:PUZZLE_NO,board,last,lives,guessLog,hard,started,over,won,
+    locked:[...locked],fixR,fixC,fixT,info};
+  memGame=g;
+  try{localStorage.setItem(GKEY,JSON.stringify(g))}catch(e){}
+}
+function restoreGame(){
+  let g=null;
+  try{const r=localStorage.getItem(GKEY);if(r)g=JSON.parse(r)}catch(e){}
+  g=g||memGame;
+  if(!g||g.day!==ymd(new Date())||g.no!==PUZZLE_NO||!Array.isArray(g.board)||g.board.length!==9)return;
+  board=g.board;last=g.last||g.board.slice();lives=g.lives;shown=lives;guessLog=g.guessLog||[];
+  hard=!!g.hard;started=!!g.started;over=!!g.over;won=!!g.won;
+  g.locked.forEach(p=>locked.add(p));
+  g.fixR.forEach((v,i)=>{fixR[i]=v});g.fixC.forEach((v,i)=>{fixC[i]=v});fixT=g.fixT;
+  Object.assign(info,g.info);
+  if(over){
+    recorded=true;solShown=true;
+    if(!won){ // lost: show the finished grid straight away
+      const s=solutionLayout();board=s.sol;last=s.sol.slice();fixT=s.t;
+      s.R.forEach((v,i)=>{fixR[i]=v});s.C.forEach((v,i)=>{fixC[i]=v});
+      for(let p=0;p<9;p++)locked.add(p);
+    }
+    recordResult(); // does nothing if it was already counted
+    setTimeout(showStats,600);
+  }
+}
+restoreGame();
 $('pno').textContent='#'+PUZZLE_NO;
 render();
 </script>
