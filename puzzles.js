@@ -18,6 +18,14 @@ const PUZZLES=[
    rows:['Religious symbols','Animal proteins','Sticky'],
    cols:['Red __','Play __','Ends in double letter']},
 
+  {words:['Snow','Fire','Foot','Star','Head','Paper','Base','Sky','Pipe'],
+   rows:['__ball','__board','__line'],
+   cols:['__man','__light','__work']},
+
+  {words:['Gold','Green','Black','Cat','Dog','Moth','Sword','Club','Cannon'],
+   rows:['Colours','Animals','Weapons'],
+   cols:['__fish','__house','__ball']},
+
   // add the next puzzle here, e.g.
   // {words:['','','','','','','','',''],
   //  rows:['','',''],
