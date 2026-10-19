@@ -10,12 +10,12 @@
 <meta property="og:title" content="Interconnections">
 <meta property="og:description" content="A daily word puzzle: arrange nine words so every row and every column shares a connection.">
 <meta name="twitter:card" content="summary">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23121213'/%3E%3Cg fill='%23a7d3f5'%3E%3Crect x='6' y='6' width='5' height='5' rx='1'/%3E%3C/g%3E%3Cg fill='%236aaa64'%3E%3Crect x='13.5' y='6' width='5' height='5' rx='1'/%3E%3Crect x='6' y='13.5' width='5' height='5' rx='1'/%3E%3Crect x='13.5' y='13.5' width='5' height='5' rx='1'/%3E%3C/g%3E%3Cg fill='%23c9b458'%3E%3Crect x='21' y='6' width='5' height='5' rx='1'/%3E%3Crect x='21' y='13.5' width='5' height='5' rx='1'/%3E%3C/g%3E%3Cg fill='%23787c7e'%3E%3Crect x='6' y='21' width='5' height='5' rx='1'/%3E%3Crect x='13.5' y='21' width='5' height='5' rx='1'/%3E%3Crect x='21' y='21' width='5' height='5' rx='1'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='.5' y='.5' width='31' height='31' rx='7' fill='white' stroke='%23d3d6da'/%3E%3Cg fill='%23a7d3f5'%3E%3Crect x='6' y='6' width='5' height='5' rx='1'/%3E%3C/g%3E%3Cg fill='%236aaa64'%3E%3Crect x='13.5' y='6' width='5' height='5' rx='1'/%3E%3Crect x='6' y='13.5' width='5' height='5' rx='1'/%3E%3Crect x='13.5' y='13.5' width='5' height='5' rx='1'/%3E%3C/g%3E%3Cg fill='%23c9b458'%3E%3Crect x='21' y='6' width='5' height='5' rx='1'/%3E%3Crect x='21' y='13.5' width='5' height='5' rx='1'/%3E%3C/g%3E%3Cg fill='%23787c7e'%3E%3Crect x='6' y='21' width='5' height='5' rx='1'/%3E%3Crect x='13.5' y='21' width='5' height='5' rx='1'/%3E%3Crect x='21' y='21' width='5' height='5' rx='1'/%3E%3C/g%3E%3C/svg%3E">
 <style>
-:root{--head-bg:#f4a9a8;--overlay:rgba(255,255,255,.72);--shadow:0 4px 23px rgba(0,0,0,.2);--bg:#fff;--fg:#121213;--line:#d3d6da;--tile-bg:#e3e5e8;--tile-fg:#121213;--green:#6aaa64;--purple:#b79df0;--yellow:#c9b458;--grey:#787c7e;--muted:#6b6e72;
+:root{--head-bg:#3d4248;--overlay:rgba(255,255,255,.72);--shadow:0 4px 23px rgba(0,0,0,.2);--bg:#fff;--fg:#121213;--line:#d3d6da;--tile-bg:#e3e5e8;--tile-fg:#121213;--green:#6aaa64;--purple:#b79df0;--yellow:#c9b458;--grey:#787c7e;--muted:#6b6e72;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--head-bg:#f4a9a8;--overlay:rgba(18,18,19,.72);--shadow:0 4px 23px rgba(0,0,0,.6);--bg:#121213;--fg:#f4f4f4;--line:#3a3a3c;--tile-bg:#d3d6da;--tile-fg:#121213;--muted:#a0a3a8}}
-:root[data-theme="dark"]{--head-bg:#f4a9a8;--overlay:rgba(18,18,19,.72);--shadow:0 4px 23px rgba(0,0,0,.6);--bg:#121213;--fg:#f4f4f4;--line:#3a3a3c;--tile-bg:#d3d6da;--tile-fg:#121213;--muted:#a0a3a8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--head-bg:#565c63;--overlay:rgba(18,18,19,.72);--shadow:0 4px 23px rgba(0,0,0,.6);--bg:#121213;--fg:#f4f4f4;--line:#3a3a3c;--tile-bg:#d3d6da;--tile-fg:#121213;--muted:#a0a3a8}}
+:root[data-theme="dark"]{--head-bg:#565c63;--overlay:rgba(18,18,19,.72);--shadow:0 4px 23px rgba(0,0,0,.6);--bg:#121213;--fg:#f4f4f4;--line:#3a3a3c;--tile-bg:#d3d6da;--tile-fg:#121213;--muted:#a0a3a8}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:"Helvetica Neue",Arial,sans-serif;min-height:100vh}
@@ -27,7 +27,7 @@ h1{font-size:clamp(1.05rem,5vw,1.6rem);text-align:center;margin:0;letter-spacing
 #grid{display:grid;grid-template-columns:1fr 5px 1fr 1fr 1fr;gap:8px}
 .rowhead{grid-column:1}
 .cell{aspect-ratio:1.5/1;display:flex;align-items:center;justify-content:center;border-radius:6px;font-weight:700;font-size:1.05rem;user-select:none}
-.head{background:var(--head-bg);border:2px solid transparent;color:var(--tile-fg);padding:2px;overflow-wrap:anywhere;text-align:center;line-height:1.15}
+.head{background:var(--head-bg);border:2px solid transparent;color:#fff;padding:2px;overflow-wrap:anywhere;text-align:center;line-height:1.15}
 .tile{background:var(--tile-bg);color:var(--tile-fg);border:2px solid transparent;cursor:pointer;transition:transform .12s,box-shadow .12s}
 .tile.sel{transform:scale(.95);box-shadow:0 0 0 3px var(--fg),inset 0 2px 6px rgba(0,0,0,.28)}
 .tile.g2{background:var(--green);border-color:var(--green);color:#fff;cursor:default}
@@ -78,7 +78,7 @@ button#share svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;str
 .plot{height:150px;display:flex;justify-content:center;align-items:flex-end;gap:12px}
 .plot .bar,.xl span{width:64px}
 .bar{background:var(--grey);color:#fff;font-weight:700;font-size:.9rem;display:flex;justify-content:center;padding-top:4px;border-radius:6px 6px 0 0}
-.bar.hit{background:var(--head-bg);color:var(--tile-fg)}
+.bar.hit{background:var(--head-bg);color:#fff}
 .xl{display:flex;justify-content:center;gap:12px;margin-top:6px}
 .xl span{text-align:center;font-size:.85rem;font-weight:700}
 .dialog .foot{margin-top:20px;color:var(--muted);font-size:.85rem}
@@ -150,7 +150,7 @@ button#share svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;str
 <script src="puzzles.js"></script>
 <script>
 // Public address put in shared results. Leave empty to use this page's own address when it is served over http(s).
-const SHARE_URL='https://interconnections.pages.dev/';
+const SHARE_URL='';
 // The puzzle list (PUZZLES) and the launch date (LAUNCH) live in puzzles.js
 const PUZZLE_NO=(()=>{const n=new Date(),
   d=Math.round((Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())-Date.UTC(LAUNCH[0],LAUNCH[1]-1,LAUNCH[2]))/864e5);
