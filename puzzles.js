@@ -46,6 +46,10 @@ const PUZZLES=[
    rows:['Animals','Body parts','Fruit'],
    cols:['Contains silent letter','Contains double letter','Blue __']},
 
+  {words:['Note','Pitch','Chord','Legal','Court','Deal','Key','Ring','Match'],
+   rows:['Music parts','Related to law','__ up'],
+   cols:['__ pad','Place for sport','Strike a __']},
+
   // add the next puzzle here, e.g.
   // {words:['','','','','','','','',''],
   //  rows:['','',''],
