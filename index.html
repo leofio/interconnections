@@ -88,9 +88,9 @@ button#share svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;str
 50%{transform:perspective(500px) rotateX(90deg);background:var(--nb);color:var(--nf);border-color:var(--nbd)}
 100%{transform:perspective(500px) rotateX(0);background:var(--nb);color:var(--nf);border-color:var(--nbd)}}
 .tools.tl{right:auto;left:16px}
-.tg{display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr;gap:6px;margin:14px 0}
-.tg .cell{font-size:.78rem;aspect-ratio:1.35/1}
-.tg .head{font-size:.62rem}
+.tg{display:grid;grid-template-columns:minmax(0,1.1fr) repeat(3,minmax(0,1fr));gap:5px;width:100%;margin:14px auto}
+.tg .cell{font-size:.72rem;aspect-ratio:1.4/1;min-width:0}
+.tg .head{font-size:.58rem;padding:2px 3px}
 .tg .tile{cursor:default}
 .tg .tile.hint{cursor:pointer;animation:tuthint 1s ease-in-out infinite}
 .tg .tile.new{animation:tutpop .45s ease-out}
