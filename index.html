@@ -87,6 +87,21 @@ button#share svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;str
 49.9%{transform:perspective(500px) rotateX(90deg);background:var(--ob);color:var(--of);border-color:var(--obd)}
 50%{transform:perspective(500px) rotateX(90deg);background:var(--nb);color:var(--nf);border-color:var(--nbd)}
 100%{transform:perspective(500px) rotateX(0);background:var(--nb);color:var(--nf);border-color:var(--nbd)}}
+.tools.tl{right:auto;left:16px}
+.tg{display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr;gap:6px;margin:14px 0}
+.tg .cell{font-size:.78rem;aspect-ratio:1.35/1}
+.tg .head{font-size:.62rem}
+.tg .tile{cursor:default}
+.tg .tile.hint{cursor:pointer;animation:tuthint 1s ease-in-out infinite}
+.tg .tile.new{animation:tutpop .45s ease-out}
+@keyframes tuthint{50%{box-shadow:0 0 0 4px var(--fg)}}
+@keyframes tutpop{0%{transform:scale(.8)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.tg .tile.hint,.tg .tile.new{animation:none}}
+.ttext{border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:.92rem;line-height:1.45;min-height:6.6em}
+.tbar{display:flex;align-items:center;justify-content:center;margin-top:12px;min-height:44px}
+.thint{color:var(--muted);font-size:.85rem;font-weight:700}
+button#tbtn{background:var(--fg);color:var(--bg)}
+@media (max-width:420px){.dialog{padding:44px 16px 24px}}
 .toast{position:fixed;top:16%;left:50%;transform:translateX(-50%);z-index:40;background:#000;color:#fff;font-weight:700;font-size:1rem;padding:12px 22px;border-radius:8px;border:1px solid rgba(255,255,255,.25);pointer-events:none;animation:toast 1800ms ease-in-out both}
 @keyframes toast{0%{opacity:0;transform:translate(-50%,-8px)}12%,78%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,0)}}
 @keyframes hopgreen{
@@ -101,6 +116,9 @@ button#share svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;str
 <body>
 <header class="top">
 <h1>Interconnections <span id="pno" class="pno"></span></h1>
+<div class="tools tl">
+<button id="statsBtn" class="icon" aria-label="Statistics" title="Statistics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11h4v9H4zM10 4h4v16h-4zM16 14h4v6h-4z"/></svg></button>
+</div>
 <div class="tools">
 <button id="hard" class="icon" aria-label="Hard mode" aria-pressed="false" title="Hard mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></button>
 <button id="help" class="icon" aria-label="How to play" title="How to play">?</button>
@@ -115,20 +133,8 @@ button#share svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;str
 <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="mt">
 <button id="close" class="x" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
 <h2 id="mt">How To Play</h2>
-<p class="lead">Sort the nine words into a 3&times;3 grid of connections in 3 tries.</p>
-<ul>
-<li>Every row and every column shares a connection, and each word belongs to one row and one column.</li>
-<li>Tap a tile, then another, to swap them. Press <b>Submit</b> to check. <b>Revert</b> undoes swaps you haven't submitted.</li>
-<li>The rows and columns start unlabelled. The game picks the setup that best fits your grid, and the colour of each tile shows how close it is.</li>
-<li>When a whole row or column is green, its connection is revealed.</li>
-</ul>
-<h3>Examples</h3>
-<div class="ex"><span class="g">Apple</span><span>Plum</span><span>Lemon</span></div>
-<p><b>Apple</b> is in the correct row and the correct column. It locks in place.</p>
-<div class="ex"><span>Soup</span><span class="y">Pear</span><span>Rice</span></div>
-<p><b>Pear</b> is in the correct row or the correct column, but not both.</p>
-<div class="ex"><span>Fork</span><span>Gold</span><span class="n">Brick</span></div>
-<p><b>Brick</b> is in neither the correct row nor the correct column.</p>
+<p class="lead">Sort the nine words into a 3&times;3 grid of connections in 3 tries. Play through this practice puzzle to learn how.</p>
+<div id="tut"></div>
 <h3>Hard mode</h3>
 <p>Press the lightning button before your first guess. The rows and columns are then fixed from the start instead of adapting to your guess, so a group in the wrong place scores nothing and you need the exact layout.</p>
 <p class="foot">A new puzzle is released daily at midnight.</p>
@@ -150,7 +156,7 @@ button#share svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;str
 <script src="puzzles.js"></script>
 <script>
 // Public address put in shared results. Leave empty to use this page's own address when it is served over http(s).
-const SHARE_URL='http://interconnections.pages.dev/';
+const SHARE_URL='';
 // The puzzle list (PUZZLES) and the launch date (LAUNCH) live in puzzles.js
 const PUZZLE_NO=(()=>{const n=new Date(),
   d=Math.round((Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())-Date.UTC(LAUNCH[0],LAUNCH[1]-1,LAUNCH[2]))/864e5);
@@ -272,6 +278,8 @@ function showStats(){
   const mx=Math.max(...st.dist),H=150,MIN=26; // fixed plot height, bars sized relative to the biggest
   $('plot').innerHTML=st.dist.map((n,i)=>{const h=mx?MIN+(H-MIN)*n/mx:MIN;
     return`<div class="bar${st.last===today&&st.res===i?' hit':''}" style="height:${h}px">${n}</div>`}).join('');
+  // the share button only makes sense once today's game is finished
+  const sh=$('share').closest('.share');sh.style.display=sh.previousElementSibling.style.display=over?'':'none';
   $('stats').hidden=false;$('closeStats').focus();
 }
 // ---- sharing: an emoji summary of how the board evolved, plus the link
@@ -374,7 +382,7 @@ $('hard').onclick=()=>{
   hard=!hard;render();toast(hard?'Hard mode on':'Hard mode off');
 };
 const modal=$('modal');
-const openRules=()=>{modal.hidden=false;$('close').focus()};
+const openRules=()=>{tutStart();modal.hidden=false;$('close').focus()};
 const closeRules=()=>{modal.hidden=true;$('help').focus()};
 $('help').onclick=openRules;$('close').onclick=closeRules;
 modal.addEventListener('click',e=>{if(e.target===modal)closeRules()});
@@ -447,9 +455,69 @@ function restoreGame(){
     setTimeout(showStats,600);
   }
 }
+// ---- guided practice game shown in How To Play (separate from the daily puzzles)
+const TUT={words:['Devil','God','Cross','Meat','Chicken','Egg','Tape','Dough','Toffee'],
+  rows:['Religious symbols','Animal proteins','Sticky'],cols:['Red __','Play __','Ends in double letter']};
+const TSTART=[3,2,1,0,7,4,6,5,8]; // word at each position; the solution is 0..8 in order
+const TSTEPS=[
+ {t:'Nine words, three rows, three columns. Every row and every column hides a connection, shown as <b>?</b> until you earn it. Each word belongs to exactly one row and one column.',btn:'Start'},
+ {t:'Tap two tiles to swap them. <b>Devil</b> is a religious symbol, so it belongs on the top row, and <b>Meat</b> is an animal protein. Tap <b>Meat</b>, then <b>Devil</b>.',swap:[0,3]},
+ {t:'Happy with the grid? Press <b>Submit</b> to check it. You get 3 tries.',submit:true},
+ {t:'Every tile shows how close it is. <b>Green</b>: right row and right column, and it locks in place. <b>Yellow</b>: right row or right column, but not both. <b>Grey</b>: neither. Devil, Meat and Tape are all green, so their column is revealed: <b>Red __</b>.',btn:'Next'},
+ {t:'<b>Cross</b> and <b>God</b> were yellow: they are in the right row but the wrong columns. Swap them.',swap:[1,2]},
+ {t:'<b>Dough</b> and <b>Chicken</b> were yellow too. Play God, Play Chicken and Play Dough make a column, so <b>Chicken</b> belongs in the middle. Swap Dough and Chicken.',swap:[4,5]},
+ {t:'<b>Dough</b> is sticky, so it belongs on the bottom row, and <b>Egg</b> (the grey one) is an animal protein. Swap Dough and Egg.',swap:[5,7]},
+ {t:'Everything looks right. Press <b>Submit</b>.',submit:true},
+ {t:'Solved in 2 tries! The rows were religious symbols, animal proteins and sticky things; the columns were red __, play __ and words ending in a double letter. Now try today\'s puzzle.',btn:'Play today\'s puzzle',end:true}];
+let tS=0,tB=[],tSel=null,tInfo={},tLock=new Set(),tNew=new Set();
+function tutStart(){tS=0;tB=TSTART.slice();tSel=null;tInfo={};tLock=new Set();tNew=new Set();tutRender()}
+function tutRender(){
+  const s=TSTEPS[tS];
+  let h='<div></div>';
+  for(let j=0;j<3;j++){const on=[0,1,2].every(i=>tLock.has(i*3+j));h+=`<div class="cell head">${on?TUT.cols[j]:'?'}</div>`}
+  for(let i=0;i<3;i++){
+    const on=[0,1,2].every(j=>tLock.has(i*3+j));
+    h+=`<div class="cell head rowhead">${on?TUT.rows[i]:'?'}</div>`;
+    for(let j=0;j<3;j++){const p=i*3+j,w=tB[p],lv=tInfo[w]&&tInfo[w][p];
+      const cls=tLock.has(p)?'g2':lv===1?'g1':lv===0?'g0':'';
+      h+=`<div class="cell tile ${cls} ${s.swap&&s.swap.includes(p)?'hint':''} ${tSel===p?'sel':''} ${tNew.has(p)?'new':''}" data-p="${p}">${TUT.words[w]}</div>`}
+  }
+  const bar=s.swap?'<span class="thint">Tap the highlighted tiles</span>':`<button id="tbtn">${s.submit?'Submit':s.btn}</button>`;
+  $('tut').innerHTML=`<div class="tg">${h}</div><div class="ttext">${s.t}</div><div class="tbar">${bar}</div>`;
+}
+function tutSubmit(){
+  const was=new Set(tLock);tNew=new Set();
+  tB.forEach((w,p)=>{const lv=((w/3|0)===(p/3|0))+(w%3===p%3);
+    (tInfo[w]=tInfo[w]||{})[p]=lv;if(lv===2)tLock.add(p);if(!was.has(p))tNew.add(p)});
+  tS++;tutRender();
+}
+$('tut').addEventListener('click',e=>{
+  const s=TSTEPS[tS];
+  if(e.target.closest('#tbtn')){
+    if(s.submit)tutSubmit();
+    else if(s.end)closeRules();
+    else{tS++;tNew=new Set();tutRender()}
+    return}
+  const t=e.target.closest('.tile');
+  if(!t||!s.swap)return;
+  const p=+t.dataset.p;if(!s.swap.includes(p))return;
+  if(tSel===null)tSel=p;
+  else if(tSel===p)tSel=null;
+  else{[tB[tSel],tB[p]]=[tB[p],tB[tSel]];tSel=null;tS++;tNew=new Set()}
+  tutRender();
+});
+$('statsBtn').onclick=showStats;
 restoreGame();
 $('pno').textContent='#'+PUZZLE_NO;
 render();
+// first visit: open How To Play automatically (existing players are not interrupted)
+const SEENKEY='interconnections-seen-v1';let memSeen=false;
+(function(){
+  let seen=memSeen;try{seen=seen||!!localStorage.getItem(SEENKEY)}catch(e){}
+  if(seen||over||started||loadStats().played>0)return;
+  memSeen=true;try{localStorage.setItem(SEENKEY,'1')}catch(e){}
+  openRules();
+})();
 </script>
 </body>
 </html>
